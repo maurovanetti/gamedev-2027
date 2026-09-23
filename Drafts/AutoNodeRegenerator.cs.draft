@@ -1,0 +1,23 @@
+#if UNITY_EDITOR
+using UnityEditor;
+using Unity.VisualScripting;
+
+[InitializeOnLoad]
+public static class AutoNodeRegenerator
+{
+    static AutoNodeRegenerator()
+    {
+        // Check a lightweight EditorPref to see if this project instance has initialized nodes
+        string prefKey = $"VS_NodesGenerated_{PlayerSettings.productName}";
+        
+        if (!EditorPrefs.GetBool(prefKey, false))
+        {
+            // Trigger Visual Scripting to rebuild its unit/node database asynchronously
+            UnitBase.Rebuild();
+            
+            // Mark as done so it doesn't trigger on every single script compilation
+            EditorPrefs.SetBool(prefKey, true);
+        }
+    }
+}
+#endif
